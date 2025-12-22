@@ -18,20 +18,13 @@ codon_table = {
 }
 
 def Transcribing_DNA_into_RNA(genome):
-    RNA = {}
     for gen in genome:
-        RNA[gen] = ""
-        for letter in genome[gen]:
-            if letter == "T":
-                RNA[gen] += "U"
-            else:
-                RNA[gen] += letter
-    return RNA
+        genome[gen] = genome[gen].replace('T', 'U')
+    return genome
 
 
 def Translating_RNA_into_Protein(RNA):
     protein = {}
-    i = 0
     for gen in RNA:
         protein[gen] = ""
         for i in range(0, len(RNA[gen]), 3):
