@@ -1,0 +1,30 @@
+def function(DNA):
+    lengths = [i for i in range(4,13)]
+    positions = []
+    lenths = []
+
+    def Complementing_a_Strand_of_DNA(genome):
+        new_genome = []
+        for letter in genome:
+            if letter == "A":
+                new_genome.append("T")
+            elif letter == "T":
+                new_genome.append("A")
+            elif letter == "C":
+                new_genome.append("G")
+            elif letter == "G":
+                new_genome.append("C")
+        new_genome.reverse()
+        new_genome = ''.join(new_genome)
+        return new_genome
+
+    for length in lengths:
+        for sequence in DNA:
+            for i in range(len(DNA[sequence])):
+                if i + length > len(DNA[sequence]):
+                    break
+                if DNA[sequence][i : i + length] == Complementing_a_Strand_of_DNA(DNA[sequence][i : i + length]):
+                    positions.append(i+1)
+                    lenths.append(length)
+
+    return positions, lenths
