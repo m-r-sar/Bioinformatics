@@ -1,6 +1,6 @@
 import numpy as np
 
-def function(s1, s2, match, mismatch, gap):
+def global_alignment(s1, s2, match, mismatch, gap):
     rows = len(s1) + 1
     cols = len(s2) + 1
     matrix = np.zeros((rows, cols))
@@ -58,14 +58,3 @@ def function(s1, s2, match, mismatch, gap):
             matching += "-"
 
     return align1[::-1], align2[::-1], final_score, matching[::-1]
-
-
-
-# target = "GCATGCU"
-# querry = "GATTACA"
-# r1, r2, s, matching = function(target, querry, 1, -3, -2)
-# print("Target:  ", 0, r1, len(target))
-# print("Matching:", 0, matching, len(matching))
-# print("Query:   ", 0, r2, len(querry))
-#
-# print("\nFinal score:", s)
