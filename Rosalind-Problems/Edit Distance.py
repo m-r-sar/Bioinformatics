@@ -24,7 +24,7 @@ def function(s1, s2, match, mismatch, gap):
     i = rows - 1
     j = cols - 1
 
-    matching = ""
+    count = 0
     while i > 0 or j > 0:
         current_score = matrix[i][j]
 
@@ -35,9 +35,9 @@ def function(s1, s2, match, mismatch, gap):
                 align2 += s2[j - 1]
 
                 if s1[i-1] == s2[j-1]:
-                    matching += "|"
+                    pass
                 else:
-                    matching += "."
+                    count += 1
 
                 i -= 1
                 j -= 1
@@ -48,13 +48,13 @@ def function(s1, s2, match, mismatch, gap):
             align1 += s1[i - 1]
             align2 += "-"
             i -= 1
-            matching += "-"
+            count += 1
             continue
 
         if j > 0 and current_score == matrix[i][j - 1] + gap:
             align1 += "-"
             align2 += s2[j - 1]
             j -= 1
-            matching += "-"
+            count += 1
 
-    return matching.count('-') + matching.count('.')
+    return count
