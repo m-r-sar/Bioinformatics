@@ -53,6 +53,36 @@ class TreeNode:
             else:
                 return self.right.find(value)
 
+class DataBase:
+    def __init__(self, path, isNucleic):
+        self.path = path
+        self.isNucleic = isNucleic
+        self.sequences = get_sequences(self.path)
+        self.k = 11 if isNucleic else 3
+
+        self.id_to_kmers = {}
+        self.id_to_hashes = {}
+        self.id_to_trees = {}
+
+        self.length = self.get_full_length()
+
+        for seq_id, sequence in self.sequences.items():
+            kmers = get_kmers(sequence, self.k)
+            self.id_to_kmers[seq_id] = kmers
+
+            hashed_sequence = hash_sequence(kmers, self.k, self.isNucleic)
+            self.id_to_hashes[seq_id] = hashed_sequence
+
+            tree = build_balanced_bst(hashed_sequence, 0, len(hashed_sequence) - 1)
+            self.id_to_trees[seq_id] = tree
+
+    def get_full_length(self):
+        length = 0
+        with open(self.path, "r") as f:
+            for line in f:
+                if not line.startswith(">"):
+                    length += len(line.strip())
+        return length
 
 def build_balanced_bst(data, left, right):
     nodes = list(data.keys())
@@ -99,30 +129,3 @@ def hash_sequence(kmers, k, isNucleic):
             code += hash_table[kmer[i-1]] * (base ** (k-i))
         hashed_sequence[code] = kmers[kmer]
     return hashed_sequence
-
-
-def main(path, isNucleic, k):
-    sequences = get_sequences(path)
-    # print("----- SEQUENCES ------")
-    # print(sequences, "\n")
-    id_to_kmers = {}
-    id_to_hashes = {}
-    id_to_trees = {}
-    for seq_id, sequence in sequences.items():
-        kmers = get_kmers(sequence, k)
-        # print("----- KMERS -----")
-        # print(kmers)
-        id_to_kmers[seq_id] = kmers
-        # print(id_to_kmers, "\n")
-
-        hashed_sequence = hash_sequence(kmers, k, isNucleic)
-        # print("----- HASHES -----")
-        # print(hashed_sequence)
-        id_to_hashes[seq_id] = hashed_sequence
-        # print(id_to_hashes, "\n")
-
-        tree = build_balanced_bst(hashed_sequence, 0, len(hashed_sequence) - 1)
-        id_to_trees[seq_id] = tree
-        # print(id_to_trees, "\n")
-
-    return id_to_trees
