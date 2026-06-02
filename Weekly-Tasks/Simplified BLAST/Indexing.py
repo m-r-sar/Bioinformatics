@@ -1,37 +1,4 @@
-from Bio import SeqIO
-
-NUCLEOTIDE_HASH = {
-    'A': 0,  # Adenine
-    'C': 1,  # Cytosine
-    'G': 2,  # Guanine
-    'T': 3,  # Thymine
-    'U': 4,  # Uracil
-    'N': 5   # Unknown nucleotide
-}
-
-AMINO_ACID_HASH = {
-    'A': 0,  # Alanine (Ala)
-    'R': 1,  # Arginine (Arg)
-    'N': 2,  # Asparagine (Asn)
-    'D': 3,  # Aspartic acid (Asp)
-    'C': 4,  # Cysteine (Cys)
-    'Q': 5,  # Glutamine (Gln)
-    'E': 6,  # Glutamic acid (Glu)
-    'G': 7,  # Glycine (Gly)
-    'H': 8,  # Histidine (His)
-    'I': 9,  # Isoleucine (Ile)
-    'L': 10, # Leucine (Leu)
-    'K': 11, # Lysine (Lys)
-    'M': 12, # Methionine (Met)
-    'F': 13, # Phenylalanine (Phe)
-    'P': 14, # Proline (Pro)
-    'S': 15, # Serine (Ser)
-    'T': 16, # Threonine (Thr)
-    'W': 17, # Tryptophan (Trp)
-    'Y': 18, # Tyrosine (Tyr)
-    'V': 19, # Valine (Val)
-    'X': 20  # Unknown amino acid
-}
+import Logic as logic
 
 class TreeNode:
     def __init__(self, key, positions):
@@ -57,7 +24,7 @@ class DataBase:
     def __init__(self, path, isNucleic):
         self.path = path
         self.isNucleic = isNucleic
-        self.sequences = get_sequences(self.path)
+        self.sequences = logic.get_sequences(self.path)
         self.k = 11 if isNucleic else 3
 
         self.id_to_kmers = {}
@@ -67,10 +34,10 @@ class DataBase:
         self.length = self.get_full_length()
 
         for seq_id, sequence in self.sequences.items():
-            kmers = get_kmers(sequence, self.k)
+            kmers = logic.get_kmers(sequence, self.k)
             self.id_to_kmers[seq_id] = kmers
 
-            hashed_sequence = hash_sequence(kmers, self.k, self.isNucleic)
+            hashed_sequence = logic.hash_sequence(kmers, self.k, self.isNucleic)
             self.id_to_hashes[seq_id] = hashed_sequence
 
             tree = build_balanced_bst(hashed_sequence, 0, len(hashed_sequence) - 1)
@@ -99,33 +66,3 @@ def build_balanced_bst(data, left, right):
     node.right = build_balanced_bst(data, mid + 1, right)
 
     return node
-
-
-def get_sequences(path):
-    sequences = {}
-    for record in SeqIO.parse(path, "fasta"):
-        sequences[record.id] = str(record.seq)
-    return sequences
-
-
-def get_kmers(sequence, k):
-    kmers = {}
-    for i in range(0, len(sequence) - k + 1):
-        if sequence[i:i + k] not in kmers:
-            kmers[sequence[i:i + k]] = [i]
-        else:
-            kmers[sequence[i:i + k]].append(i)
-    return kmers
-
-
-def hash_sequence(kmers, k, isNucleic):
-    hashed_sequence = {}
-    hash_table = NUCLEOTIDE_HASH if isNucleic else AMINO_ACID_HASH
-    base = 5 if isNucleic else 21
-
-    for kmer in kmers:
-        code = 0
-        for i in range(1, k+1):
-            code += hash_table[kmer[i-1]] * (base ** (k-i))
-        hashed_sequence[code] = kmers[kmer]
-    return hashed_sequence
