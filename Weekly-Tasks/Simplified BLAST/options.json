@@ -1,0 +1,11 @@
+{
+  "x": 5,
+  "K" : 0.1,
+  "L" : 0.3,
+  "top" : 3,
+  "modifier" : 3,
+  "nucleic_k-mer_size" : 11,
+  "protein_k-mer_size" : 3,
+  "match_score" : 1,
+  "missmatch_score" : -3
+}
