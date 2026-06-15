@@ -1,7 +1,4 @@
 def function(reads):
-    if not reads:
-        return []
-
     total_edges = len(reads)
     results = set()
 
@@ -31,12 +28,3 @@ def function(reads):
     dfs(start_node, start_string, edges_count, 1)
 
     return list(results)
-
-
-dataset = []
-with open(r"C:\Users\rodio\PycharmProjects\Bioinformatics\Rosalind.txt", "r") as f:
-    for line in f:
-        dataset.append(line.strip())
-result = function(dataset)
-for r in result:
-    print(r)
