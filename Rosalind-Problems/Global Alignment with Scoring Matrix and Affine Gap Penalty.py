@@ -62,65 +62,73 @@ def function(s1, s2):
     M_score = M[-1][-1]
     I_score = I[-1][-1]
     J_score = J[-1][-1]
-    print(M)
-    print(I)
-    print(J)
-    # final_score = max(M_score, I_score, J_score)
-    # if final_score == M_score:
-    #     matrix = M
-    # elif final_score == I_score:
-    #     matrix = I
-    # else:
-    #     matrix = J
-    #
-    # align1 = ""
-    # align2 = ""
-    # i = rows - 1
-    # j = cols - 1
-    #
-    # matching = ""
-    # while i > 0 or j > 0:
-    #     print("--------------------------------------------------")
-    #     current_score = matrix[i][j]
-    #     print(current_score)
-    #
-    #     if i > 0 and j > 0:
-    #         s_ij = blosum62.get(s1[i-1] + s2[j-1], 0)
-    #         print([M[i - 1][j - 1] + s_ij, I[i - 1][j - 1] + s_ij, J[i - 1][j - 1] + s_ij])
-    #         if current_score in [M[i - 1][j - 1] + s_ij, I[i - 1][j - 1] + s_ij, J[i - 1][j - 1] + s_ij]:
-    #             align1 += s1[i - 1]
-    #             align2 += s2[j - 1]
-    #
-    #             if s1[i - 1] == s2[j - 1]:
-    #                 matching += "|"
-    #             else:
-    #                 matching += "."
-    #
-    #             i -= 1
-    #             j -= 1
-    #
-    #             continue
-    #     print([I[i-1][j] + gap_extension, J[i-1][j] + gap_opening, M[i-1][j] + gap_opening])
-    #     if i > 0 and current_score in [I[i-1][j] + gap_extension, J[i-1][j] + gap_opening, M[i-1][j] + gap_opening]:
-    #         align1 += s1[i - 1]
-    #         align2 += "-"
-    #         i -= 1
-    #         matching += "-"
-    #         continue
-    #     print([J[i][j - 1] + gap_extension, I[i][j - 1] + gap_opening, M[i][j - 1] + gap_opening])
-    #     if j > 0 and current_score in [J[i][j - 1] + gap_extension, I[i][j - 1] + gap_opening, M[i][j - 1] + gap_opening]:
-    #         align1 += "-"
-    #         align2 += s2[j - 1]
-    #         j -= 1
-    #         matching += "-"
-    #     print(align1)
-    #     print(align2)
-    #
-    # return align1[::-1], align2[::-1], final_score, matching[::-1]
+
+    final_score = max(M_score, I_score, J_score)
+    if final_score == M_score:
+        matrix = M
+    elif final_score == I_score:
+        matrix = I
+    else:
+        matrix = J
+
+    align1 = ""
+    align2 = ""
+    i = rows - 1
+    j = cols - 1
+
+    matching = ""
+    while i > 0 or j > 0:
+        current_score = matrix[i][j]
 
 
-from Parse_FASTA import Parse_FASTA
-s = Parse_FASTA(r"C:\Users\rodio\PycharmProjects\Bioinformatics\Rosalind.txt")
-s1, s2 = s.values()
-result = function(s1, s2)
-print(result)
+        if i > 0 and j > 0:
+            s_ij = blosum62.get(s1[i - 1] + s2[j - 1], 0)
+            if current_score in [M[i - 1][j - 1] + s_ij, I[i - 1][j - 1] + s_ij, J[i - 1][j - 1] + s_ij]:
+                if current_score == M[i - 1][j - 1] + s_ij:
+                    matrix = M
+                elif current_score == I[i - 1][j - 1] + s_ij:
+                    matrix = I
+                else:
+                    matrix = J
+                align1 += s1[i - 1]
+                align2 += s2[j - 1]
+
+                if s1[i - 1] == s2[j - 1]:
+                    matching += "|"
+                else:
+                    matching += "."
+
+                i -= 1
+                j -= 1
+
+                continue
+
+        if i > 0 and current_score in [I[i-1][j] + gap_extension, J[i-1][j] + gap_opening, M[i-1][j] + gap_opening]:
+            if current_score == I[i-1][j] + gap_extension:
+                matrix = I
+            elif current_score == J[i-1][j] + gap_opening:
+                matrix = J
+            else:
+                matrix = M
+
+            align1 += s1[i - 1]
+            align2 += "-"
+            i -= 1
+            matching += "-"
+            continue
+
+        if j > 0 and current_score in [J[i][j - 1] + gap_extension, I[i][j - 1] + gap_opening, M[i][j - 1] + gap_opening]:
+            if current_score == J[i][j - 1] + gap_extension:
+                matrix = J
+            elif current_score == I[i][j - 1] + gap_opening:
+                matrix = I
+            else:
+                matrix = M
+
+            align1 += "-"
+            align2 += s2[j - 1]
+            j -= 1
+            matching += "-"
+
+
+    return align1[::-1], align2[::-1], final_score, matching[::-1]

@@ -23,18 +23,6 @@ PAM250 = {
     'YA': -3, 'YC':  0, 'YD': -4, 'YE': -4, 'YF':  7, 'YG': -5, 'YH':  0, 'YI': -1, 'YK': -4, 'YL': -1, 'YM': -2, 'YN': -2, 'YP': -5, 'YQ': -4, 'YR': -4, 'YS': -3, 'YT': -3, 'YV': -2, 'YW':  0, 'YY': 10,
 }
 
-def find_max(matrix):
-    max_i = 0
-    max_j = 0
-    max_value = 0
-    for i in range(len(matrix)):
-        for j in range(len(matrix[0])):
-            if matrix[i][j] > max_value:
-                max_value = matrix[i][j]
-                max_i = i
-                max_j = j
-    return max_i, max_j, int(max_value)
-
 
 def function(s1, s2):
     gap = -5
@@ -54,7 +42,11 @@ def function(s1, s2):
                 matrix[row][col - 1] + gap,
                 0
             )
-    i, j, max_score = find_max(matrix)
+    best_score = np.max(matrix)
+    m = np.argmax(matrix)
+
+    i = m // len(matrix[:, 0])
+    j = m % len(matrix[0])
     align1 = ""
     align2 = ""
 
@@ -82,4 +74,4 @@ def function(s1, s2):
         else:
             break
 
-    return max_score, align1[::-1], align2[::-1]
+    return best_score, align1[::-1], align2[::-1]
